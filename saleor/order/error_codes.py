@@ -36,3 +36,8 @@ class OrderErrorCode(Enum):
     MISSING_TRANSACTION_ACTION_REQUEST_WEBHOOK = (
         "missing_transaction_action_request_webhook"
     )
+
+
+class OrderBulkCreateErrorCode(Enum):
+    GRAPHQL_ERROR = "graphql_error"
+    REQUIRED = "required"
