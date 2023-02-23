@@ -10242,6 +10242,7 @@ enum OrderOriginEnum {
   CHECKOUT
   DRAFT
   REISSUE
+  BULK_CREATE
 }
 
 """An enumeration."""
