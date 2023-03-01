@@ -18330,25 +18330,13 @@ input ProductBulkCreateInput {
   """Defines the product rating value."""
   rating: Float
 
-  """
-  Fields required to update the product metadata.
-  
-  Added in Saleor 3.8.
-  """
+  """Fields required to update the product metadata."""
   metadata: [MetadataInput!]
 
-  """
-  Fields required to update the product private metadata.
-  
-  Added in Saleor 3.8.
-  """
+  """Fields required to update the product private metadata."""
   privateMetadata: [MetadataInput!]
 
-  """
-  External ID of this product.
-  
-  Added in Saleor 3.10.
-  """
+  """External ID of this product."""
   externalReference: String
 
   """ID of the type that product belongs to."""
