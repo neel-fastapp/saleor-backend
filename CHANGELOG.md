@@ -10,6 +10,10 @@ All notable, unreleased changes to this project will be documented in this file.
 
 ### Other changes
 
+### Saleor Apps
+
+- Add `author` field to the `Manifest` and `App` object types - #12166 by @przlada
+
 # 3.12.0
 
 ### Breaking changes
