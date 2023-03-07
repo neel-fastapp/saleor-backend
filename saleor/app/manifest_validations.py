@@ -1,6 +1,6 @@
 import logging
 from collections import defaultdict
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Optional
 
 from django.core.exceptions import ValidationError
 from django.db.models import Value
@@ -109,6 +109,11 @@ def clean_manifest_data(manifest_data):
                 code=AppErrorCode.INVALID_URL_FORMAT.value,
             )
         )
+
+    try:
+        clean_author(manifest_data.get("author"))
+    except ValidationError as e:
+        errors["author"].append(e)
 
     saleor_permissions = get_permissions().annotate(
         formated_codename=Concat("content_type__app_label", Value("."), "codename")
@@ -291,3 +296,11 @@ def validate_required_fields(manifest_data, errors):
                     code=AppErrorCode.REQUIRED.value,
                 )
             )
+
+
+def clean_author(author) -> Optional[str]:
+    if author is None or (isinstance(author, str) and author.strip()):
+        return author
+    raise ValidationError(
+        "Incorrect value for field: author", code=AppErrorCode.INVALID.value
+    )

@@ -16,6 +16,7 @@ from ..core.descriptions import (
     ADDED_IN_31,
     ADDED_IN_35,
     ADDED_IN_38,
+    ADDED_IN_313,
     DEPRECATED_IN_3X_FIELD,
     PREVIEW_FEATURE,
 )
@@ -223,6 +224,9 @@ class Manifest(graphene.ObjectType):
             + ADDED_IN_38
             + PREVIEW_FEATURE
         )
+    )
+    author = graphene.String(
+        description=("The App's author name." + ADDED_IN_313 + PREVIEW_FEATURE)
     )
 
     class Meta:
