@@ -3,6 +3,7 @@ from unittest.mock import Mock
 import pytest
 import requests
 
+from .....app.error_codes import AppErrorCode
 from ....tests.utils import assert_no_permission, get_graphql_content
 from ...enums import AppExtensionMountEnum, AppExtensionTargetEnum
 
@@ -25,6 +26,7 @@ mutation AppFetchManifest($manifest_url: String!){
         code
       }
       audience
+      author
       extensions{
         label
         url
@@ -627,3 +629,44 @@ def test_app_fetch_manifest_with_extensions(
     assert extension["url"] == "http://127.0.0.1:8080/app"
     assert extension["mount"] == AppExtensionMountEnum.PRODUCT_OVERVIEW_CREATE.name
     assert extension["target"] == AppExtensionTargetEnum.POPUP.name
+
+
+def test_app_fetch_manifest_with_author(
+    staff_api_client, app_manifest, permission_manage_apps, monkeypatch
+):
+    app_manifest["author"] = "Acme Ltd"
+    mocked_get_response = Mock()
+    mocked_get_response.json.return_value = app_manifest
+    monkeypatch.setattr(requests, "get", Mock(return_value=mocked_get_response))
+    response = staff_api_client.post_graphql(
+        APP_FETCH_MANIFEST_MUTATION,
+        variables={"manifest_url": "http://localhost:3000/manifest"},
+        permissions=[permission_manage_apps],
+    )
+
+    content = get_graphql_content(response)
+    manifest = content["data"]["appFetchManifest"]["manifest"]
+
+    assert len(content["data"]["appFetchManifest"]["errors"]) == 0
+    assert manifest["author"] == app_manifest["author"]
+
+
+def test_app_fetch_manifest_with_empty_author(
+    staff_api_client, app_manifest, permission_manage_apps, monkeypatch
+):
+    app_manifest["author"] = " "
+    mocked_get_response = Mock()
+    mocked_get_response.json.return_value = app_manifest
+    monkeypatch.setattr(requests, "get", Mock(return_value=mocked_get_response))
+    response = staff_api_client.post_graphql(
+        APP_FETCH_MANIFEST_MUTATION,
+        variables={"manifest_url": "http://localhost:3000/manifest"},
+        permissions=[permission_manage_apps],
+    )
+
+    content = get_graphql_content(response)
+    errors = content["data"]["appFetchManifest"]["errors"]
+
+    assert len(errors) == 1
+    assert errors[0]["field"] == "author"
+    assert errors[0]["code"] == AppErrorCode.INVALID.name
