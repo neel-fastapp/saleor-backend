@@ -4,6 +4,12 @@ schema {
   subscription: Subscription
 }
 
+"""Groups fields and operations into named groups."""
+directive @doc(
+  """Name of the grouping category"""
+  category: String!
+) on FIELD
+
 type Query {
   """
   Look up a webhook by ID. Requires one of the following permissions: MANAGE_APPS, OWNER.
@@ -1318,13 +1324,13 @@ type Query {
 
     """Sublocality like a district."""
     cityArea: String
-  ): AddressValidationData
+  ): AddressValidationData @doc(category: "Users")
 
   """Look up an address by ID."""
   address(
     """ID of an address."""
     id: ID!
-  ): Address
+  ): Address @doc(category: "Users")
 
   """
   List of the shop's customers.
@@ -1349,7 +1355,7 @@ type Query {
 
     """Return the last n elements from the list."""
     last: Int
-  ): UserCountableConnection
+  ): UserCountableConnection @doc(category: "Users")
 
   """
   List of permission groups.
@@ -1374,7 +1380,7 @@ type Query {
 
     """Return the last n elements from the list."""
     last: Int
-  ): GroupCountableConnection
+  ): GroupCountableConnection @doc(category: "Users")
 
   """
   Look up permission group by ID.
@@ -1384,10 +1390,10 @@ type Query {
   permissionGroup(
     """ID of the group."""
     id: ID!
-  ): Group
+  ): Group @doc(category: "Users")
 
   """Return the currently authenticated user."""
-  me: User
+  me: User @doc(category: "Users")
 
   """
   List of the shop's staff users.
@@ -1412,7 +1418,7 @@ type Query {
 
     """Return the last n elements from the list."""
     last: Int
-  ): UserCountableConnection
+  ): UserCountableConnection @doc(category: "Users")
 
   """
   Look up a user by ID or email address.
@@ -1432,7 +1438,7 @@ type Query {
     Added in Saleor 3.10.
     """
     externalReference: String
-  ): User
+  ): User @doc(category: "Users")
   _entities(representations: [_Any]): [_Entity]
   _service: _Service
 }
@@ -3154,7 +3160,7 @@ type Warehouse implements Node & ObjectWithMetadata {
 }
 
 """Represents user address data."""
-type Address implements Node & ObjectWithMetadata {
+type Address implements Node & ObjectWithMetadata @doc(category: "Users") {
   id: ID!
 
   """
@@ -8715,7 +8721,7 @@ type StaffNotificationRecipient implements Node {
 }
 
 """Represents user data."""
-type User implements Node & ObjectWithMetadata {
+type User implements Node & ObjectWithMetadata @doc(category: "Users") {
   id: ID!
 
   """List of private metadata items. Requires staff permissions to access."""
@@ -10799,7 +10805,8 @@ type OrderCountableEdge {
   cursor: String!
 }
 
-type UserPermission {
+"""Represents user's permissions."""
+type UserPermission @doc(category: "Users") {
   """Internal code for permission."""
   code: PermissionEnum!
 
@@ -10814,7 +10821,7 @@ type UserPermission {
 }
 
 """Represents permission group data."""
-type Group implements Node {
+type Group implements Node @doc(category: "Users") {
   id: ID!
   name: String!
 
@@ -10835,7 +10842,7 @@ type Group implements Node {
 }
 
 """History log of the customer."""
-type CustomerEvent implements Node {
+type CustomerEvent implements Node @doc(category: "Users") {
   id: ID!
 
   """Date when event happened at in ISO 8601 format."""
@@ -12023,7 +12030,8 @@ input AppExtensionFilterInput {
   target: AppExtensionTargetEnum
 }
 
-type AddressValidationData {
+"""Represents address validation rules for a country."""
+type AddressValidationData @doc(category: "Users") {
   countryCode: String!
   countryName: String!
   addressFormat: String!
@@ -23552,7 +23560,7 @@ type AppDeactivate {
 }
 
 """Create JWT token."""
-type CreateToken {
+type CreateToken @doc(category: "Authentication") {
   """JWT token, required to authenticate."""
   token: String
 
@@ -23624,7 +23632,7 @@ enum AccountErrorCode {
 """
 Refresh JWT token. Mutation tries to take refreshToken from the input.If it fails it will try to take refreshToken from the http-only cookie -refreshToken. csrfToken is required when refreshToken is provided as a cookie.
 """
-type RefreshToken {
+type RefreshToken @doc(category: "Authentication") {
   """JWT token, required to authenticate."""
   token: String
 
@@ -23635,7 +23643,7 @@ type RefreshToken {
 }
 
 """Verify JWT token."""
-type VerifyToken {
+type VerifyToken @doc(category: "Authentication") {
   """User assigned to token."""
   user: User
 
@@ -23660,7 +23668,7 @@ Deactivate all JWT tokens of the currently authenticated user.
 
 Requires one of the following permissions: AUTHENTICATED_USER.
 """
-type DeactivateAllUserTokens {
+type DeactivateAllUserTokens @doc(category: "Authentication") {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
@@ -23691,7 +23699,7 @@ type ExternalObtainAccessTokens {
 }
 
 """Refresh user's access by custom plugin."""
-type ExternalRefresh {
+type ExternalRefresh @doc(category: "Authentication") {
   """The token, required to authenticate."""
   token: String
 
@@ -23708,7 +23716,7 @@ type ExternalRefresh {
 }
 
 """Logout user by custom plugin."""
-type ExternalLogout {
+type ExternalLogout @doc(category: "Authentication") {
   """The data returned by authentication plugin."""
   logoutData: JSONString
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23716,7 +23724,7 @@ type ExternalLogout {
 }
 
 """Verify external authentication data by plugin."""
-type ExternalVerify {
+type ExternalVerify @doc(category: "Authentication") {
   """User assigned to data."""
   user: User
 
@@ -23730,13 +23738,13 @@ type ExternalVerify {
 }
 
 """Sends an email with the account password modification link."""
-type RequestPasswordReset {
+type RequestPasswordReset @doc(category: "Users") {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
 """Confirm user account with token sent by email during registration."""
-type ConfirmAccount {
+type ConfirmAccount @doc(category: "Users") {
   """An activated user account."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23746,7 +23754,7 @@ type ConfirmAccount {
 """
 Sets the user's password from the token sent by email using the RequestPasswordReset mutation.
 """
-type SetPassword {
+type SetPassword @doc(category: "Users") {
   """JWT token, required to authenticate."""
   token: String
 
@@ -23767,7 +23775,7 @@ Change the password of the logged in user.
 
 Requires one of the following permissions: AUTHENTICATED_USER.
 """
-type PasswordChange {
+type PasswordChange @doc(category: "Users") {
   """A user instance with a new password."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23779,7 +23787,7 @@ Request email change of the logged in user.
 
 Requires one of the following permissions: AUTHENTICATED_USER.
 """
-type RequestEmailChange {
+type RequestEmailChange @doc(category: "Users") {
   """A user instance."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23791,7 +23799,7 @@ Confirm the email change of the logged-in user.
 
 Requires one of the following permissions: AUTHENTICATED_USER.
 """
-type ConfirmEmailChange {
+type ConfirmEmailChange @doc(category: "Users") {
   """A user instance with a new email."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23803,7 +23811,7 @@ Create a new address for the customer.
 
 Requires one of the following permissions: AUTHENTICATED_USER.
 """
-type AccountAddressCreate {
+type AccountAddressCreate @doc(category: "Users") {
   """A user instance for which the address was created."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23814,7 +23822,7 @@ type AccountAddressCreate {
 """
 Updates an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER.
 """
-type AccountAddressUpdate {
+type AccountAddressUpdate @doc(category: "Users") {
   """A user object for which the address was edited."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23825,7 +23833,7 @@ type AccountAddressUpdate {
 """
 Delete an address of the logged-in user. Requires one of the following permissions: MANAGE_USERS, IS_OWNER.
 """
-type AccountAddressDelete {
+type AccountAddressDelete @doc(category: "Users") {
   """A user instance for which the address was deleted."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23838,7 +23846,7 @@ Sets a default address for the authenticated user.
 
 Requires one of the following permissions: AUTHENTICATED_USER.
 """
-type AccountSetDefaultAddress {
+type AccountSetDefaultAddress @doc(category: "Users") {
   """An updated user instance."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23846,7 +23854,7 @@ type AccountSetDefaultAddress {
 }
 
 """Register a new user."""
-type AccountRegister {
+type AccountRegister @doc(category: "Users") {
   """Informs whether users need to confirm their email address."""
   requiresConfirmation: Boolean
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23887,7 +23895,7 @@ Updates the account of the logged-in user.
 
 Requires one of the following permissions: AUTHENTICATED_USER.
 """
-type AccountUpdate {
+type AccountUpdate @doc(category: "Users") {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
@@ -23915,7 +23923,7 @@ Sends an email with the account removal link for the logged-in user.
 
 Requires one of the following permissions: AUTHENTICATED_USER.
 """
-type AccountRequestDeletion {
+type AccountRequestDeletion @doc(category: "Users") {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
@@ -23925,7 +23933,7 @@ Remove user account.
 
 Requires one of the following permissions: AUTHENTICATED_USER.
 """
-type AccountDelete {
+type AccountDelete @doc(category: "Users") {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
@@ -23936,7 +23944,7 @@ Creates user address.
 
 Requires one of the following permissions: MANAGE_USERS.
 """
-type AddressCreate {
+type AddressCreate @doc(category: "Users") {
   """A user instance for which the address was created."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23949,7 +23957,7 @@ Updates an address.
 
 Requires one of the following permissions: MANAGE_USERS.
 """
-type AddressUpdate {
+type AddressUpdate @doc(category: "Users") {
   """A user object for which the address was edited."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23962,7 +23970,7 @@ Deletes an address.
 
 Requires one of the following permissions: MANAGE_USERS.
 """
-type AddressDelete {
+type AddressDelete @doc(category: "Users") {
   """A user instance for which the address was deleted."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23975,7 +23983,7 @@ Sets a default address for the given user.
 
 Requires one of the following permissions: MANAGE_USERS.
 """
-type AddressSetDefault {
+type AddressSetDefault @doc(category: "Users") {
   """An updated user instance."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -23987,7 +23995,7 @@ Creates a new customer.
 
 Requires one of the following permissions: MANAGE_USERS.
 """
-type CustomerCreate {
+type CustomerCreate @doc(category: "Users") {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
@@ -24041,7 +24049,7 @@ Updates an existing customer.
 
 Requires one of the following permissions: MANAGE_USERS.
 """
-type CustomerUpdate {
+type CustomerUpdate @doc(category: "Users") {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
@@ -24085,7 +24093,7 @@ Deletes a customer.
 
 Requires one of the following permissions: MANAGE_USERS.
 """
-type CustomerDelete {
+type CustomerDelete @doc(category: "Users") {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
   user: User
@@ -24108,7 +24116,7 @@ Creates a new staff user. Apps are not allowed to perform this mutation.
 
 Requires one of the following permissions: MANAGE_STAFF.
 """
-type StaffCreate {
+type StaffCreate @doc(category: "Users") {
   staffErrors: [StaffError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [StaffError!]!
   user: User
@@ -24169,7 +24177,7 @@ Updates an existing staff user. Apps are not allowed to perform this mutation.
 
 Requires one of the following permissions: MANAGE_STAFF.
 """
-type StaffUpdate {
+type StaffUpdate @doc(category: "Users") {
   staffErrors: [StaffError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [StaffError!]!
   user: User
@@ -24203,7 +24211,7 @@ Deletes a staff user. Apps are not allowed to perform this mutation.
 
 Requires one of the following permissions: MANAGE_STAFF.
 """
-type StaffDelete {
+type StaffDelete @doc(category: "Users") {
   staffErrors: [StaffError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [StaffError!]!
   user: User
@@ -24226,7 +24234,7 @@ Create a user avatar. Only for staff members. This mutation must be sent as a `m
 
 Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
 """
-type UserAvatarUpdate {
+type UserAvatarUpdate @doc(category: "Users") {
   """An updated user instance."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -24238,7 +24246,7 @@ Deletes a user avatar. Only for staff members.
 
 Requires one of the following permissions: AUTHENTICATED_STAFF_USER.
 """
-type UserAvatarDelete {
+type UserAvatarDelete @doc(category: "Users") {
   """An updated user instance."""
   user: User
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -24262,7 +24270,7 @@ Create new permission group. Apps are not allowed to perform this mutation.
 
 Requires one of the following permissions: MANAGE_STAFF.
 """
-type PermissionGroupCreate {
+type PermissionGroupCreate @doc(category: "Users") {
   permissionGroupErrors: [PermissionGroupError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PermissionGroupError!]!
   group: Group
@@ -24315,7 +24323,7 @@ Update permission group. Apps are not allowed to perform this mutation.
 
 Requires one of the following permissions: MANAGE_STAFF.
 """
-type PermissionGroupUpdate {
+type PermissionGroupUpdate @doc(category: "Users") {
   permissionGroupErrors: [PermissionGroupError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PermissionGroupError!]!
   group: Group
@@ -24343,7 +24351,7 @@ Delete permission group. Apps are not allowed to perform this mutation.
 
 Requires one of the following permissions: MANAGE_STAFF.
 """
-type PermissionGroupDelete {
+type PermissionGroupDelete @doc(category: "Users") {
   permissionGroupErrors: [PermissionGroupError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [PermissionGroupError!]!
   group: Group
