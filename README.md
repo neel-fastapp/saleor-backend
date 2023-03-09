@@ -95,20 +95,22 @@ The current production-ready version is 3.x and you should use this version for 
 - Dashboard: https://github.com/saleor/saleor-dashboard/releases/
 - Storefront: https://github.com/saleor/react-storefront/releases/
 
-### Saleor Cloud
-The fastest way to develop with Saleor is by using developer accounts in [Saleor Cloud](https://cloud.saleor.io).
+Steps to run:
 
-Register [here](https://cloud.saleor.io/register) or install our [CLI tool](https://github.com/saleor/saleor-cli):
+```
+# Migrate db
+docker-compose run --rm api python3 manage.py migrate
 
-`npm i -g @saleor/cli`
+# (Optional) Populate db
+docker-compose run --rm api python3 manage.py populatedb
 
-and run the following command:
+# Create super user
+docker-compose run --rm api python3 manage.py createsuperuser
 
-`saleor register`
+# Start the processes
+docker-compose up
 
-Bootstrap your first [storefront](https://github.com/saleor/react-storefront) with:
-
-`saleor storefront create --demo`
+```
 
 ## Documentation
 
@@ -140,34 +142,9 @@ For the dashboard go to the [saleor-dashboard](https://github.com/saleor/saleor-
 
 Want to see Saleor in action?
 
-* [View React Storefront](https://demo.saleor.io/)
-* [View Dashboard (admin area)](https://demo.saleor.io/dashboard/)
-
-Or launch the demo on a Heroku instance.
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-Login credentials: `admin@example.com`/`admin`
-
-## Contributing
-
-We love your contributions and do our best to provide you with mentorship and support. If you are looking for an issue to tackle, take a look at issues labeled [`Help Wanted`](https://github.com/saleor/saleor/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22).
-
-If nothing grabs your attention, check [our roadmap](https://github.com/orgs/saleor/projects/3/views/4) or come up with your feature. Just drop us a line or [open an issue](https://github.com/saleor/saleor/issues/new) and we’ll work out how to handle it.
-
-Get more details in our [Contributing Guide](https://docs.saleor.io/docs/developer/community/contributing).
-
-## Your feedback
-
-Do you use Saleor as an e-commerce platform?
-Fill out this short survey and help us grow. It will take just a minute, but mean a lot!
-
-[Take a survey](https://mirumee.typeform.com/to/sOIJbJ)
+- [View React Storefront](https://demo.saleor.io/)
+- [View Dashboard (admin area)](https://demo.saleor.io/dashboard/)
 
 ## License
 
 Disclaimer: Everything you see here is open and free to use as long as you comply with the [license](https://github.com/saleor/saleor/blob/master/LICENSE). There are no hidden charges. We promise to do our best to fix bugs and improve the code.
-
-#### Crafted with ❤️ by [Saleor Commerce](https://saleor.io)
-
-hello@saleor.io
