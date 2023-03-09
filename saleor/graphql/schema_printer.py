@@ -24,7 +24,6 @@ from graphql.utils.ast_from_value import ast_from_value
 
 __all__ = ["print_schema", "print_introspection_schema", "print_type"]
 
-# TODO: add support for doc directives in input object types
 # TODO: add support for doc directives in connection types
 # TODO: add support for doc directives in enums
 
@@ -197,7 +196,12 @@ def print_input_object(type_: GraphQLInputObjectType) -> str:
         print_description(field, "  ", not i) + "  " + print_input_value(name, field)
         for i, (name, field) in enumerate(type_.fields.items())
     ]
-    return print_description(type_) + f"input {type_.name}" + print_block(fields)
+    return (
+        print_description(type_)
+        + f"input {type_.name}"
+        + print_object_directives(type_)
+        + print_block(fields)
+    )
 
 
 def print_fields(type_: Union[GraphQLObjectType, GraphQLInterfaceType]) -> str:

@@ -23576,7 +23576,8 @@ type CreateToken @doc(category: "Authentication") {
   errors: [AccountError!]!
 }
 
-type AccountError {
+"""Represents errors in account mutations."""
+type AccountError @doc(category: "Users") {
   """
   Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
   """
@@ -23862,7 +23863,8 @@ type AccountRegister @doc(category: "Users") {
   user: User
 }
 
-input AccountRegisterInput {
+"""Fields required to create a user."""
+input AccountRegisterInput @doc(category: "Users") {
   """Given name."""
   firstName: String
 
@@ -23901,7 +23903,8 @@ type AccountUpdate @doc(category: "Users") {
   user: User
 }
 
-input AccountInput {
+"""Fields required to update the user."""
+input AccountInput @doc(category: "Users") {
   """Given name."""
   firstName: String
 
@@ -24104,7 +24107,7 @@ Deletes customers.
 
 Requires one of the following permissions: MANAGE_USERS.
 """
-type CustomerBulkDelete {
+type CustomerBulkDelete @doc(category: "Users") {
   """Returns how many objects were affected."""
   count: Int!
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -24147,7 +24150,8 @@ type StaffError {
   users: [ID!]
 }
 
-input StaffCreateInput {
+"""Fields required to create a staff user."""
+input StaffCreateInput @doc(category: "Users") {
   """Given name."""
   firstName: String
 
@@ -24183,7 +24187,8 @@ type StaffUpdate @doc(category: "Users") {
   user: User
 }
 
-input StaffUpdateInput {
+"""Fields required to update a staff user."""
+input StaffUpdateInput @doc(category: "Users") {
   """Given name."""
   firstName: String
 
@@ -24222,7 +24227,7 @@ Deletes staff users. Apps are not allowed to perform this mutation.
 
 Requires one of the following permissions: MANAGE_STAFF.
 """
-type StaffBulkDelete {
+type StaffBulkDelete @doc(category: "Users") {
   """Returns how many objects were affected."""
   count: Int!
   staffErrors: [StaffError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -24258,7 +24263,7 @@ Activate or deactivate users.
 
 Requires one of the following permissions: MANAGE_USERS.
 """
-type UserBulkSetActive {
+type UserBulkSetActive @doc(category: "Users") {
   """Returns how many objects were affected."""
   count: Int!
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
